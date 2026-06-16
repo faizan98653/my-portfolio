@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 
 const BackgroundEffect = () => {
   const canvasRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
+  );
 
   useEffect(() => {
-    const mobile = window.matchMedia("(pointer: coarse)").matches;
-    setIsMobile(mobile);
-    if (mobile) return;
+    if (isMobile) return;
+
 
     let animationFrameId;
     let resizeCanvas;

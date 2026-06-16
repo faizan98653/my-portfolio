@@ -15,11 +15,10 @@ const Resume = lazy(() => import("./components/Resume"));
 const Contact = lazy(() => import("./components/Contact"));
 
 function App() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
+  );
 
-  useEffect(() => {
-    setIsMobile(window.matchMedia("(pointer: coarse)").matches);
-  }, []);
 
   return (
     <div className="relative min-h-screen bg-dark-950 text-gray-100 overflow-x-hidden selection:bg-brand-blue/30 selection:text-white">

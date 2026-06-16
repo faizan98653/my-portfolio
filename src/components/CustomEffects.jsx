@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const CustomEffects = () => {
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isDesktop] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches && !("ontouchstart" in window)
+  );
+  const [isMobile] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
+  );
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -24,18 +28,11 @@ const CustomEffects = () => {
   const maxTrailParticles = 12;
 
   useEffect(() => {
-    const isPointerFine =
-      window.matchMedia("(pointer: fine)").matches &&
-      !("ontouchstart" in window);
-    const mobile = window.matchMedia("(pointer: coarse)").matches;
-
-    setIsMobile(mobile);
-    setIsDesktop(isPointerFine);
-
-    if (!isPointerFine) {
+    if (!isDesktop) {
       // Ensure native cursor is fully restored
       document.body.style.cursor = "auto";
     }
+
 
     let rAFId;
     let rAFScrollId;

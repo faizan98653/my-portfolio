@@ -7,7 +7,7 @@ export const portfolioData = {
     title: "Full Stack Web Developer",
     subTitle: "Building Scalable, Premium & High-Performance Web Applications",
     bio: "I am a passionate Full Stack Developer dedicated to crafting immersive, responsive, and functionally robust digital experiences. By bridging the gap between elegant frontend interfaces and optimized backend systems, I build websites that don't just work, but captivate. My focus is on clean architecture, modern tech stacks, and creating measurable value for businesses.",
-    profileImage: "/profile.jpeg", // TODO: Replace with live profile photo in /public/profile.jpg
+    profileImage: "/profile.webp", // TODO: Replace with live profile photo in /public/profile.jpg
     resumePath: "/resume.pdf", // TODO: Replace with actual resume PDF in /public/resume.pdf
   },
 
@@ -85,7 +85,7 @@ export const portfolioData = {
       techStack: ["React.js", "HTML", " CSS", "JAVASCRIPT", "Git/Github"],
       // TODO: replace with live project URL
       projectLink: "https://github.com/faizan98653",
-      image: "chatbot.PNG",
+      image: "chatbot.webp",
     },
     {
       id: 2,
@@ -94,7 +94,7 @@ export const portfolioData = {
       techStack: ["ESP32", "Arduino C/C++", "Unity", "SteamVR", "OpenVR", "Potentiometers", "Servo Motors", "3D Printing"],
       // TODO: replace with live project URL
       projectLink: "https://github.com/faizan98653",
-      image: "vr_glove.PNG",
+      image: "vr_glove.webp",
     },
     {
       id: 3,
@@ -103,7 +103,7 @@ export const portfolioData = {
       techStack: ["C++"],
       // TODO: replace with live project URL
       projectLink: "https://github.com/faizan98653",
-      image: "1024.PNG",
+      image: "1024.webp",
     },
   ],
 
