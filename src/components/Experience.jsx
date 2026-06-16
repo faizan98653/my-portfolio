@@ -16,6 +16,9 @@ const TypewriterText = ({ text, speed = 40, delay = 0.3, active = true }) => {
     }
     if (!isInView) return;
 
+    const isMobileDevice = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+    const finalSpeed = isMobileDevice ? Math.round(speed / 2) : speed;
+
     let timer;
     const startTyping = () => {
       let idx = 0;
@@ -23,7 +26,7 @@ const TypewriterText = ({ text, speed = 40, delay = 0.3, active = true }) => {
         setDisplayedText(text.substring(0, idx + 1));
         idx++;
         if (idx < text.length) {
-          timer = setTimeout(type, speed);
+          timer = setTimeout(type, finalSpeed);
         }
       };
       type();
@@ -45,13 +48,10 @@ const Experience = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
+    const mobile = window.matchMedia("(pointer: coarse)").matches;
+    setIsMobile(mobile);
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
-
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // 3D Tilt mouse handlers (disable on mobile)
@@ -96,7 +96,7 @@ const Experience = () => {
       opacity: 1,
       y: 0,
       transition: {
-        duration: prefersReducedMotion ? 0 : 0.55,
+        duration: prefersReducedMotion ? 0 : (isMobile ? 0.4 : 0.55),
         ease: "easeOut",
       },
     },
@@ -111,7 +111,7 @@ const Experience = () => {
       opacity: 1,
       x: 0,
       transition: {
-        duration: prefersReducedMotion ? 0 : 0.6,
+        duration: prefersReducedMotion ? 0 : (isMobile ? 0.4 : 0.6),
         ease: "easeOut",
       },
     },
@@ -127,7 +127,7 @@ const Experience = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: isMobile ? 0.4 : 0.5 }}
             className="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight"
           >
             Work <span className="text-brand-purple text-glow">Experience</span>
@@ -196,7 +196,7 @@ const Experience = () => {
                         key={idx}
                         variants={{
                           hidden: { opacity: 0, y: 5 },
-                          visible: { opacity: 1, y: 0, transition: { duration: prefersReducedMotion ? 0 : 0.35 } },
+                          visible: { opacity: 1, y: 0, transition: { duration: prefersReducedMotion ? 0 : (isMobile ? 0.4 : 0.35) } },
                         }}
                         className="flex items-start gap-2.5 text-sm text-gray-400 leading-relaxed"
                         style={{ minWidth: 0, wordBreak: "break-word", overflowWrap: "break-word" }}
@@ -303,7 +303,7 @@ const Experience = () => {
                         key={idx}
                         variants={{
                           hidden: { opacity: 0, y: 5 },
-                          visible: { opacity: 1, y: 0, transition: { duration: prefersReducedMotion ? 0 : 0.4 } },
+                          visible: { opacity: 1, y: 0, transition: { duration: prefersReducedMotion ? 0 : (isMobile ? 0.4 : 0.4) } },
                         }}
                         className="flex items-start gap-3 text-sm text-gray-400 leading-relaxed"
                       >

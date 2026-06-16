@@ -18,13 +18,10 @@ const WhyChooseMe = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
+    const mobile = window.matchMedia("(pointer: coarse)").matches;
+    setIsMobile(mobile);
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
-
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // 3D Tilt mouse handlers (disable on mobile)
@@ -69,7 +66,7 @@ const WhyChooseMe = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: prefersReducedMotion ? 0 : 0.6,
+        duration: prefersReducedMotion ? 0 : (isMobile ? 0.4 : 0.6),
         ease: "easeOut",
       },
     },
@@ -85,7 +82,7 @@ const WhyChooseMe = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: isMobile ? 0.4 : 0.5 }}
             className="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight"
           >
             Why <span className="text-brand-cyan text-glow-cyan">Choose Me</span>
@@ -132,7 +129,7 @@ const WhyChooseMe = () => {
                     whileInView={{ rotate: prefersReducedMotion ? 0 : 360 }}
                     viewport={{ once: true }}
                     transition={{ 
-                      duration: prefersReducedMotion ? 0 : 1.2, 
+                      duration: prefersReducedMotion ? 0 : (isMobile ? 0.4 : 1.2), 
                       ease: "easeOut", 
                       delay: prefersReducedMotion ? 0 : 0.15 
                     }}

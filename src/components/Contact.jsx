@@ -57,13 +57,10 @@ const Contact = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
+    const mobile = window.matchMedia("(pointer: coarse)").matches;
+    setIsMobile(mobile);
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
-
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // 3D Tilt mouse handlers (disable on mobile)
@@ -104,7 +101,7 @@ const Contact = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
+      transition: { duration: isMobile ? 0.4 : 0.5, ease: "easeOut" },
     },
   };
 
@@ -122,7 +119,7 @@ const Contact = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: isMobile ? 0.4 : 0.5 }}
             className="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight"
           >
             Get In <span className="text-brand-cyan text-glow-cyan">Touch</span>

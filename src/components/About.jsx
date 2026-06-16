@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { portfolioData } from "../data/portfolioData";
 import { Award, Terminal, Shield } from "lucide-react";
+import { useState, useEffect } from "react";
 
 // Simple mapping for skills section icons
 const skillCategoryIcons = {
@@ -12,6 +13,11 @@ const skillCategoryIcons = {
 
 const About = () => {
   const { personalInfo, stats, skills } = portfolioData;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -28,7 +34,7 @@ const About = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: isMobile ? 0.4 : 0.6, ease: "easeOut" },
     },
   };
 
@@ -42,7 +48,7 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: isMobile ? 0.4 : 0.5 }}
             className="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight"
           >
             About <span className="text-brand-blue text-glow">Me</span>

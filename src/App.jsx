@@ -1,18 +1,26 @@
-import React from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Navbar from "./components/Navbar";
 import BackgroundEffect from "./components/BackgroundEffect";
 import CustomEffects from "./components/CustomEffects";
 import Hero from "./components/Hero";
-import About from "./components/About";
-import WhyChooseMe from "./components/WhyChooseMe";
-import Projects from "./components/Projects";
-import Experience from "./components/Experience";
-import Resume from "./components/Resume";
-import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
+// Lazy load section components below the hero
+const About = lazy(() => import("./components/About"));
+const WhyChooseMe = lazy(() => import("./components/WhyChooseMe"));
+const Projects = lazy(() => import("./components/Projects"));
+const Experience = lazy(() => import("./components/Experience"));
+const Resume = lazy(() => import("./components/Resume"));
+const Contact = lazy(() => import("./components/Contact"));
+
 function App() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
+
   return (
     <div className="relative min-h-screen bg-dark-950 text-gray-100 overflow-x-hidden selection:bg-brand-blue/30 selection:text-white">
       {/* Dynamic Digital Rain Canvas Background */}
@@ -30,68 +38,80 @@ function App() {
 
       {/* Page Content Layout */}
       <main className="relative w-full flex flex-col z-10">
-        {/* 1. Hero / Introduction */}
+        {/* 1. Hero / Introduction - Eagerly loaded */}
         <Hero />
 
         {/* 2. About Me Biography & Skills */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <About />
-        </motion.div>
+        <Suspense fallback={<div />}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: isMobile ? 0.4 : 0.5, ease: "easeOut" }}
+          >
+            <About />
+          </motion.div>
+        </Suspense>
 
         {/* 3. Why Choose Me benefits */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <WhyChooseMe />
-        </motion.div>
+        <Suspense fallback={<div />}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: isMobile ? 0.4 : 0.5, ease: "easeOut" }}
+          >
+            <WhyChooseMe />
+          </motion.div>
+        </Suspense>
 
         {/* 4. Projects portfolio grid */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <Projects />
-        </motion.div>
+        <Suspense fallback={<div />}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: isMobile ? 0.4 : 0.5, ease: "easeOut" }}
+          >
+            <Projects />
+          </motion.div>
+        </Suspense>
 
         {/* 5. Work Timeline Experience */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <Experience />
-        </motion.div>
+        <Suspense fallback={<div />}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: isMobile ? 0.4 : 0.5, ease: "easeOut" }}
+          >
+            <Experience />
+          </motion.div>
+        </Suspense>
 
         {/* 6. Resume PDF Download */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <Resume />
-        </motion.div>
+        <Suspense fallback={<div />}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: isMobile ? 0.4 : 0.5, ease: "easeOut" }}
+          >
+            <Resume />
+          </motion.div>
+        </Suspense>
 
         {/* 7. Contact Info Listings */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <Contact />
-        </motion.div>
+        <Suspense fallback={<div />}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: isMobile ? 0.4 : 0.5, ease: "easeOut" }}
+          >
+            <Contact />
+          </motion.div>
+        </Suspense>
       </main>
 
       {/* Footer metadata block & live PKT clock */}

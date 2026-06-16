@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Download, FileText } from "lucide-react";
 import { portfolioData } from "../data/portfolioData";
 
 const Resume = () => {
   const { resumePath } = portfolioData.personalInfo;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
 
   return (
     <section id="resume" className="relative py-24 px-6 z-10 border-t border-white/5 bg-dark-950/20">
@@ -14,7 +19,7 @@ const Resume = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: isMobile ? 0.4 : 0.6 }}
           className="glass-panel p-10 md:p-16 rounded-3xl relative overflow-hidden flex flex-col items-center border border-white/5 hover:border-brand-blue/25 transition-all duration-500"
         >
           {/* Decorative glowing backdrops */}

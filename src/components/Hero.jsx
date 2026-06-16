@@ -8,8 +8,15 @@ const Hero = () => {
   const { personalInfo, socialLinks } = portfolioData;
   const { name, title, subTitle, profileImage } = personalInfo;
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
+
   // 3D Tilt mouse handlers
   const handleMouseMove = (e) => {
+    if (isMobile) return;
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -22,6 +29,7 @@ const Hero = () => {
   };
 
   const handleMouseLeave = (e) => {
+    if (isMobile) return;
     const card = e.currentTarget;
     card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
   };
@@ -41,7 +49,7 @@ const Hero = () => {
       if (!isDeleting) {
         // Typing
         setCurrentText(activeWord.substring(0, currentText.length + 1));
-        setTypingSpeed(75);
+        setTypingSpeed(isMobile ? 50 : 75);
 
         if (currentText === activeWord) {
           // Pause before deleting
@@ -51,7 +59,7 @@ const Hero = () => {
       } else {
         // Deleting
         setCurrentText(activeWord.substring(0, currentText.length - 1));
-        setTypingSpeed(40);
+        setTypingSpeed(isMobile ? 25 : 40);
 
         if (currentText === "") {
           setIsDeleting(false);
@@ -64,7 +72,7 @@ const Hero = () => {
 
     timer = setTimeout(handleType, typingSpeed);
     return () => clearTimeout(timer);
-  }, [currentText, isDeleting, currentWordIdx, typingSpeed]);
+  }, [currentText, isDeleting, currentWordIdx, typingSpeed, isMobile]);
 
   const handleScrollToContact = (e) => {
     e.preventDefault();
@@ -105,7 +113,7 @@ const Hero = () => {
         <motion.div
           initial={{ opacity: 0, y: 35 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: isMobile ? 0.4 : 0.8, ease: "easeOut" }}
           className="hud-card-wrapper w-64 h-80 md:w-72 md:h-[360px] mb-8 cursor-pointer shadow-[0_0_20px_rgba(0,240,255,0.05)] transition-all duration-200 relative"
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
@@ -130,6 +138,10 @@ const Hero = () => {
               <img
                 src={profileImage}
                 alt={name}
+                loading="eager"
+                decoding="async"
+                width={288}
+                height={288}
                 onError={(e) => {
                   e.target.style.display = "none";
                   document.getElementById("fallback-avatar").style.display = "flex";

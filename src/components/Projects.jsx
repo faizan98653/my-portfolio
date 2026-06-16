@@ -2,9 +2,15 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { portfolioData } from "../data/portfolioData";
+import { useState, useEffect } from "react";
 
 const Projects = () => {
   const { projects } = portfolioData;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -21,7 +27,7 @@ const Projects = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: isMobile ? 0.4 : 0.6, ease: "easeOut" },
     },
   };
 
@@ -35,7 +41,7 @@ const Projects = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: isMobile ? 0.4 : 0.5 }}
             className="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight"
           >
             My  <span className="text-brand-blue text-glow">Projects</span>
@@ -68,6 +74,9 @@ const Projects = () => {
                   src={project.image}
                   alt={project.title}
                   loading="lazy"
+                  decoding="async"
+                  width={640}
+                  height={360}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
 
