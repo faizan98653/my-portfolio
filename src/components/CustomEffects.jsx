@@ -1,27 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const CustomEffects = () => {
-  const [isDesktop] = useState(() =>
-    typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches && !("ontouchstart" in window)
+  const [isDesktop] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: fine)").matches &&
+      !("ontouchstart" in window),
   );
-  const [isMobile] = useState(() =>
-    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
+  const [isMobile] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches,
   );
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
   // Start off-screen so cursor never flashes at (0,0) before first mousemove
-  const mouse      = useRef({ x: -100, y: -100 });
-  const cursorDot  = useRef({ x: -100, y: -100 });
+  const mouse = useRef({ x: -100, y: -100 });
+  const cursorDot = useRef({ x: -100, y: -100 });
   const cursorRing = useRef({ x: -100, y: -100 });
-  const bgCoords   = useRef({ x: -100, y: -100 });
+  const bgCoords = useRef({ x: -100, y: -100 });
 
   // DOM refs
-  const dotRef      = useRef(null);
-  const ringRef     = useRef(null);
-  const bgRef       = useRef(null);
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+  const bgRef = useRef(null);
   const progressRef = useRef(null);
-  const canvasRef   = useRef(null);
+  const canvasRef = useRef(null);
 
   // Particle pool for trail
   const trail = useRef([]);
@@ -33,13 +38,15 @@ const CustomEffects = () => {
       document.body.style.cursor = "auto";
     }
 
-
     let rAFId;
     let rAFScrollId;
     let scrollTimeout;
     let resizeListener;
     let scrollListener;
-    let mouseMoveListener, mouseDownListener, mouseUpListener, mouseOverListener;
+    let mouseMoveListener,
+      mouseDownListener,
+      mouseUpListener,
+      mouseOverListener;
 
     const init = () => {
       // ── Scroll progress bar & optional parallax ───────────────────────
@@ -49,36 +56,44 @@ const CustomEffects = () => {
         rAFScrollId = requestAnimationFrame(() => {
           rAFScrollId = null;
 
-          const scrollTop    = window.pageYOffset || document.documentElement.scrollTop;
-          const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-          const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+          const scrollHeight =
+            document.documentElement.scrollHeight -
+            document.documentElement.clientHeight;
+          const scrollPercent =
+            scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
 
           if (progressRef.current) {
             progressRef.current.style.width = `${scrollPercent}%`;
           }
 
           // Disable parallax scroll effects on mobile
-          if (!mobile) {
-            const parallaxElements = document.querySelectorAll(".parallax-element");
+          if (!isMobile) {
+            const parallaxElements =
+              document.querySelectorAll(".parallax-element");
             const vh = window.innerHeight;
             parallaxElements.forEach((el) => {
-              const rect         = el.getBoundingClientRect();
-              const centerOffset = (vh / 2) - (rect.top + rect.height / 2);
+              const rect = el.getBoundingClientRect();
+              const centerOffset = vh / 2 - (rect.top + rect.height / 2);
               el.style.transform = `translateY(${centerOffset * 0.15}px)`;
             });
           }
         });
 
         // Disable scroll snapping on mobile
-        if (!mobile) {
+        if (!isMobile) {
           clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(() => {
-            const sections  = document.querySelectorAll("section");
+            const sections = document.querySelectorAll("section");
             const threshold = 80;
             for (let section of sections) {
               const rect = section.getBoundingClientRect();
               if (Math.abs(rect.top) > 5 && Math.abs(rect.top) < threshold) {
-                window.scrollTo({ top: window.pageYOffset + rect.top, behavior: "smooth" });
+                window.scrollTo({
+                  top: window.pageYOffset + rect.top,
+                  behavior: "smooth",
+                });
                 break;
               }
             }
@@ -91,51 +106,55 @@ const CustomEffects = () => {
       handleScroll(); // run once immediately
 
       // ── Desktop only features: Cursor, Custom Trail, and Follow Gradient ──
-      if (isPointerFine) {
+      if (isDesktop) {
         const handleMouseMove = (e) => {
           mouse.current.x = e.clientX;
           mouse.current.y = e.clientY;
         };
 
         const handleMouseDown = () => setIsClicked(true);
-        const handleMouseUp   = () => setIsClicked(false);
+        const handleMouseUp = () => setIsClicked(false);
 
         const handleMouseOver = (e) => {
           const target = e.target;
           if (!target) return;
           const clickable = target.closest(
-            "a, button, [role='button'], input, select, textarea, .cursor-pointer, .hud-card-wrapper"
+            "a, button, [role='button'], input, select, textarea, .cursor-pointer, .hud-card-wrapper",
           );
           setIsHovered(!!clickable);
         };
 
-        document.addEventListener("mousemove",  handleMouseMove, { passive: true });
-        document.addEventListener("mousedown",  handleMouseDown, { passive: true });
-        document.addEventListener("mouseup",    handleMouseUp,   { passive: true });
-        document.addEventListener("mouseover",  handleMouseOver, { passive: true });
+        document.addEventListener("mousemove", handleMouseMove, {
+          passive: true,
+        });
+        document.addEventListener("mousedown", handleMouseDown, {
+          passive: true,
+        });
+        document.addEventListener("mouseup", handleMouseUp, { passive: true });
+        document.addEventListener("mouseover", handleMouseOver, {
+          passive: true,
+        });
 
         mouseMoveListener = handleMouseMove;
         mouseDownListener = handleMouseDown;
-        mouseUpListener   = handleMouseUp;
+        mouseUpListener = handleMouseUp;
         mouseOverListener = handleMouseOver;
 
         let lastTime = 0;
         const animate = (time) => {
           cursorRing.current.x = mouse.current.x;
           cursorRing.current.y = mouse.current.y;
-          cursorDot.current.x  = mouse.current.x;
-          cursorDot.current.y  = mouse.current.y;
+          cursorDot.current.x = mouse.current.x;
+          cursorDot.current.y = mouse.current.y;
 
           bgCoords.current.x += (mouse.current.x - bgCoords.current.x) * 0.05;
           bgCoords.current.y += (mouse.current.y - bgCoords.current.y) * 0.05;
 
           if (dotRef.current) {
-            dotRef.current.style.transform =
-              `translate3d(${cursorDot.current.x}px, ${cursorDot.current.y}px, 0) translate(-50%, -50%)`;
+            dotRef.current.style.transform = `translate3d(${cursorDot.current.x}px, ${cursorDot.current.y}px, 0) translate(-50%, -50%)`;
           }
           if (ringRef.current) {
-            ringRef.current.style.transform =
-              `translate3d(${cursorRing.current.x}px, ${cursorRing.current.y}px, 0) translate(-50%, -50%)`;
+            ringRef.current.style.transform = `translate3d(${cursorRing.current.x}px, ${cursorRing.current.y}px, 0) translate(-50%, -50%)`;
           }
 
           if (bgRef.current) {
@@ -144,13 +163,19 @@ const CustomEffects = () => {
 
           if (time - lastTime > 60) {
             if (trail.current.length < maxTrailParticles) {
-              trail.current.push({ x: mouse.current.x, y: mouse.current.y, size: 4, alpha: 0.8 });
+              trail.current.push({
+                x: mouse.current.x,
+                y: mouse.current.y,
+                size: 4,
+                alpha: 0.8,
+              });
             } else {
-              const oldest = trail.current.find(p => p.alpha <= 0) || trail.current[0];
-              oldest.x     = mouse.current.x;
-              oldest.y     = mouse.current.y;
+              const oldest =
+                trail.current.find((p) => p.alpha <= 0) || trail.current[0];
+              oldest.x = mouse.current.x;
+              oldest.y = mouse.current.y;
               oldest.alpha = 0.8;
-              oldest.size  = 4;
+              oldest.size = 4;
             }
             lastTime = time;
           }
@@ -166,7 +191,7 @@ const CustomEffects = () => {
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
                 p.alpha -= 0.03;
-                p.size   = Math.max(0, p.size - 0.08);
+                p.size = Math.max(0, p.size - 0.08);
               }
             });
           }
@@ -179,7 +204,7 @@ const CustomEffects = () => {
         const handleResize = () => {
           const canvas = canvasRef.current;
           if (canvas) {
-            canvas.width  = window.innerWidth;
+            canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
           }
         };
@@ -193,18 +218,22 @@ const CustomEffects = () => {
 
     return () => {
       clearTimeout(initTimer);
-      if (mouseMoveListener) document.removeEventListener("mousemove", mouseMoveListener);
-      if (mouseDownListener) document.removeEventListener("mousedown", mouseDownListener);
-      if (mouseUpListener)   document.removeEventListener("mouseup",   mouseUpListener);
-      if (mouseOverListener) document.removeEventListener("mouseover", mouseOverListener);
-      if (scrollListener)    window.removeEventListener("scroll",      scrollListener);
-      if (resizeListener)    window.removeEventListener("resize",      resizeListener);
-      
+      if (mouseMoveListener)
+        document.removeEventListener("mousemove", mouseMoveListener);
+      if (mouseDownListener)
+        document.removeEventListener("mousedown", mouseDownListener);
+      if (mouseUpListener)
+        document.removeEventListener("mouseup", mouseUpListener);
+      if (mouseOverListener)
+        document.removeEventListener("mouseover", mouseOverListener);
+      if (scrollListener) window.removeEventListener("scroll", scrollListener);
+      if (resizeListener) window.removeEventListener("resize", resizeListener);
+
       if (rAFId) cancelAnimationFrame(rAFId);
       if (rAFScrollId) cancelAnimationFrame(rAFScrollId);
       clearTimeout(scrollTimeout);
     };
-  }, []);
+  }, [isDesktop, isMobile]);
 
   // On mobile pointer devices, only render the progress bar
   if (!isDesktop) {
@@ -227,10 +256,7 @@ const CustomEffects = () => {
       />
 
       {/* Large radial gradient following cursor — background layer */}
-      <div
-        ref={bgRef}
-        className="fixed inset-0 pointer-events-none z-0"
-      />
+      <div ref={bgRef} className="fixed inset-0 pointer-events-none z-0" />
 
       {/* Canvas layer for glow trail — id matches CSS safety net */}
       <canvas
@@ -254,7 +280,7 @@ const CustomEffects = () => {
           }`}
           style={{
             willChange: "transform",
-            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)"
+            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
           }}
         />
 
@@ -271,7 +297,7 @@ const CustomEffects = () => {
           }`}
           style={{
             willChange: "transform",
-            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)"
+            transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
           }}
         />
       </div>
